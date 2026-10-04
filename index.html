@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#A8DDD3">
+  <meta name="application-name" content="Clari Finanzas">
+  <meta name="apple-mobile-web-app-title" content="Clari">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <title>Clari Finanzas</title>
+  <style>
+    :root{--bg:#F7FBFA;--card:#fff;--ink:#24413C;--muted:#6C817C;--mint:#A8DDD3;--line:#DCEBE7}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+    body{min-height:100vh}
+    .home{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,#F4FBF9,#F9FCFB)}
+    .card{width:min(430px,100%);background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 18px 55px rgba(36,65,60,.12);text-align:center}
+    .brand img{width:108px;height:108px;border-radius:28px;margin-bottom:16px}
+    .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#78908A;font-weight:700;margin-bottom:8px}
+    h1{font-size:31px;margin:0;letter-spacing:-.03em}
+    .sub{margin:7px 0 22px;color:var(--muted);font-size:14px}
+    .status{padding:14px;border-radius:16px;background:#F1F8F6;color:#607A74;font-size:13px;line-height:1.5;margin-bottom:16px}
+    button{width:100%;padding:16px;border:0;border-radius:16px;font-size:16px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--mint),#94D1C5);color:var(--ink)}
+    .small{font-size:11px;color:#829892;line-height:1.5;margin-top:16px}
+    .appShell{display:none;position:fixed;inset:0;background:#fff}
+    .topbar{height:54px;padding-top:env(safe-area-inset-top);display:flex;align-items:center;justify-content:space-between;padding-left:16px;padding-right:10px;background:#F7FBFA;border-bottom:1px solid #DCEBE7}
+    .title{font-weight:800;font-size:16px}
+    .close{width:42px;height:42px;border-radius:50%;padding:0;font-size:25px;line-height:1;background:transparent;border:0}
+    iframe{width:100%;height:calc(100% - 54px - env(safe-area-inset-top));border:0;background:#fff}
+  </style>
+</head>
+<body>
+  <section class="home" id="home">
+    <main class="card">
+      <div class="brand"><img src="./icon.svg" alt="Clari Finanzas"></div>
+      <div class="eyebrow">Tus finanzas · con ritmo y claridad</div>
+      <h1>Clari Finanzas</h1>
+      <div class="sub">Tu espacio simple para ordenar el mes.</div>
+      <div class="status">Acceso directo a tu aplicación personal de ingresos y gastos.</div>
+      <button onclick="abrirClari()">ABRIR CLARI</button>
+      <div class="small">Instalá esta aplicación en la pantalla de inicio para entrar desde su propio ícono.</div>
+    </main>
+  </section>
+
+  <section class="appShell" id="appShell">
+    <div class="topbar">
+      <div class="title">Clari Finanzas</div>
+      <button class="close" onclick="cerrarClari()" aria-label="Cerrar">×</button>
+    </div>
+    <iframe id="appFrame" title="Clari Finanzas" allow="microphone"></iframe>
+  </section>
+
+<script>
+  const APP='https://script.google.com/macros/s/AKfycbzUuwzw3ytKRSajB0VAoPn2L-7dr12QqswhVk6m8eBHSdKndmws9RBDMUc0j7nMViUt/exec';
+
+  const params=new URLSearchParams(location.search);
+  const voice=params.get('voice');
+
+  function abrirClari(){
+    document.getElementById('home').style.display='none';
+    document.getElementById('appShell').style.display='block';
+    document.getElementById('appFrame').src=voice ? APP+'?voice='+encodeURIComponent(voice) : APP;
+  }
+
+  function cerrarClari(){
+    document.getElementById('appFrame').src='about:blank';
+    document.getElementById('appShell').style.display='none';
+    document.getElementById('home').style.display='flex';
+    history.replaceState(null,'',location.pathname);
+  }
+
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+
+  if(voice){ abrirClari(); }
+</script>
+</body>
+</html>
