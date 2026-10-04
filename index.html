@@ -49,7 +49,7 @@
   <section class="appShell" id="appShell">
     <div class="topbar">
       <div class="title">Clari Finanzas</div>
-      <button class="close" onclick="cerrarClari()" aria-label="Cerrar">×</button>
+      
     </div>
     <iframe id="appFrame" title="Clari Finanzas" allow="microphone"></iframe>
   </section>
@@ -66,21 +66,15 @@
     document.getElementById('appFrame').src=voice ? APP+'?voice='+encodeURIComponent(voice) : APP;
   }
 
-  function cerrarClari(){
-    document.getElementById('appFrame').src='about:blank';
-    try { window.close(); } catch(e) {}
-    setTimeout(()=>{
-      if(document.visibilityState === 'visible'){
-        location.href='about:blank';
-      }
-    },120);
-  }
+  const esInstalada = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('./sw.js').catch(()=>{});
   }
 
-  if(voice){ abrirClari(); }
+  if(esInstalada || voice){
+    abrirClari();
+  }
 </script>
 </body>
 </html>
