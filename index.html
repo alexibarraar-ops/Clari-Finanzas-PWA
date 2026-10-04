@@ -68,9 +68,12 @@
 
   function cerrarClari(){
     document.getElementById('appFrame').src='about:blank';
-    document.getElementById('appShell').style.display='none';
-    document.getElementById('home').style.display='flex';
-    history.replaceState(null,'',location.pathname);
+    try { window.close(); } catch(e) {}
+    setTimeout(()=>{
+      if(document.visibilityState === 'visible'){
+        location.href='about:blank';
+      }
+    },120);
   }
 
   if('serviceWorker' in navigator){
